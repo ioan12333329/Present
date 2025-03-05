@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadou Surpriză cu Imagini și Muzică</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Aliniere la început pentru a permite scroll */
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+            font-family: 'Arial', sans-serif;
+            overflow-y: auto; /* Adăugăm scroll vertical */
+            padding: 20px; /* Spațiu în jurul conținutului */
+        }
+
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 500px; /* Limităm lățimea pe ecrane mari */
+        }
+
+        .cadou {
+            cursor: pointer;
+            padding: 20px 30px;
+            background-color: #ff6f61;
+            color: white;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(255, 111, 97, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cadou:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(255, 111, 97, 0.5);
+        }
+
+        .cadou::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 70%);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s ease;
+        }
+
+        .cadou:active::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .cadou.open {
+            animation: explode 0.5s ease forwards;
+        }
+
+        .imagini-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .imagini-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .buton-next {
+            margin-bottom: 20px; /* Mutat în partea de sus */
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .buton-next:hover {
+            background-color: #45a049;
+        }
+
+        .avertisment-casti {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ff6f61;
+            font-weight: bold;
+        }
+
+        /* Stiluri pentru telefoane */
+        @media (max-width: 600px) {
+            .cadou {
+                font-size: 20px;
+                padding: 15px 25px;
+            }
+
+            .imagini-container img {
+                max-width: 90%; /* Reducem dimensiunea imaginilor pe telefoane */
+            }
+
+            .buton-next {
+                font-size: 16px;
+                padding: 8px 16px;
+            }
+
+            .avertisment-casti {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cadou" onclick="deschideCadoul()">
+            🎁 A little present!
+        </div>
+
+        <div class="avertisment-casti" id="avertisment-casti" style="display: none;">
+           Folosește căști pentru cea mai bună experiență!
+        </div>
+
+        <div class="imagini-container">
+            <button class="buton-next" onclick="schimbaImaginea()">Next</button>
+            <img id="imagine1" src="1.png" alt="For my dear girlfriend">
+            <img id="imagine2" src="2.png" alt="" style="display: none;">
+        </div>
+
+        <audio id="muzica" src="ioan.mp3"></audio>
+    </div>
+
+    <script>
+        let imagineCurenta = 1;
+
+        function deschideCadoul() {
+            const cadou = document.querySelector('.cadou');
+            const imaginiContainer = document.querySelector('.imagini-container');
+            const avertismentCasti = document.getElementById('avertisment-casti');
+            const audio = document.getElementById('muzica');
+
+            // Adaugă clasa pentru animație
+            cadou.classList.add('open');
+
+            // Afișează containerul cu imagini după o mică întârziere
+            setTimeout(() => {
+                imaginiContainer.style.display = "block";
+            }, 500);
+
+            // Afișează avertismentul pentru căști
+            avertismentCasti.style.display = "block";
+
+            // Redă muzica după o mică întârziere
+            setTimeout(() => {
+                audio.play().catch(() => {
+                    alert("Muzica nu poate fi redată. Asigură-te că ai permis redarea audio în browser.");
+                });
+            }, 500);
+
+            // Schimbă textul după deschidere
+            setTimeout(() => {
+                cadou.textContent = "🎉 Surpriză! Uită-te la imagini!";
+                cadou.style.backgroundColor = "#4caf50";
+                cadou.style.cursor = "default";
+                cadou.onclick = null; // Dezactivează funcția după ce cadoul este deschis
+            }, 500);
+        }
+
+        function schimbaImaginea() {
+            const imagine1 = document.getElementById('imagine1');
+            const imagine2 = document.getElementById('imagine2');
+
+            if (imagineCurenta === 1) {
+                imagine1.style.display = "none";
+                imagine2.style.display = "block";
+                imagineCurenta = 2;
+            } else {
+                imagine1.style.display = "block";
+                imagine2.style.display = "none";
+                imagineCurenta = 1;
+            }
+        }
+    </script>
+</body>
+</html>
